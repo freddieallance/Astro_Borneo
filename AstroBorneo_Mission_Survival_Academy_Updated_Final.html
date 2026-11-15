@@ -1,0 +1,3117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AstroBorneo | Mission Survival Academy</title>
+<style>
+:root {
+--navy:#222a5b;
+--blue:#465b99;
+--text:#344270;
+--muted:#7080a0;
+--cream:#fffdf7;
+--shadow:0 14px 36px #101b4535;
+}
+* { box-sizing:border-box; }
+body {
+margin:0;
+min-height:100vh;
+color:var(--text);
+background:radial-gradient(circle at 10% 5%,#565c94,transparent 35%),
+linear-gradient(150deg,#252d66,#151b42);
+font-family:"Trebuchet MS",system-ui,sans-serif;
+}
+button { font:inherit;cursor:pointer; }
+button:focus-visible { outline:3px solid #ffc96f;outline-offset:3px; }
+.app { max-width:1450px;margin:auto;padding:15px; }
+header {
+color:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:15px;
+}
+.logo { display:flex;gap:12px;align-items:center; }
+.logo-icon {
+background:linear-gradient(#ffe7ab,#ffa78c);
+border-radius:17px;
+padding:11px;
+font-size:30px;
+}
+.logo strong { display:block;font-size:26px; }
+.logo small { font-size:10px;letter-spacing:2px;color:#d5dcff; }
+.toolbar { display:flex;gap:8px;flex-wrap:wrap; }
+.toolbar button,.counter {
+background:#ffffff25;
+border:1px solid #ffffff33;
+border-radius:14px;
+color:white;
+font-weight:900;
+padding:10px 12px;
+}
+.counter { background:#fff;color:#465183; }
+.layout {
+display:grid;
+grid-template-columns:minmax(0,1fr) 295px;
+gap:15px;
+align-items:start;
+}
+.stage {
+background:white;
+border:5px solid white;
+border-radius:24px;
+box-shadow:var(--shadow);
+overflow:hidden;
+}
+.meters {
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:9px;
+background:#f3f5ff;
+padding:12px;
+}
+.meter {
+padding:10px;
+background:white;
+border:2px solid #e6e9f6;
+border-radius:14px;
+}
+.meter-top {
+display:flex;
+justify-content:space-between;
+gap:4px;
+font-size:12px;
+font-weight:900;
+}
+.meter-top span { color:#7d88a4; }
+.bar { display:flex;gap:3px;margin-top:7px; }
+.bar i {
+display:block;
+height:11px;
+flex:1;
+background:#e9ebf5;
+border-radius:4px;
+}
+.bar i.power { background:#ffc56f; }
+.bar i.life { background:#76dbae; }
+.bar i.safety { background:#b4a0ef; }
+.map-wrap { position:relative;background:#625b8a; }
+canvas {
+display:block;
+width:100%;
+aspect-ratio:960/600;
+touch-action:none;
+}
+.map-hint {
+position:absolute;
+bottom:12px;
+left:50%;
+transform:translateX(-50%);
+background:#fffffff0;
+border-radius:30px;
+padding:10px 15px;
+font-size:12px;
+font-weight:900;
+white-space:nowrap;
+max-width:90%;
+overflow:hidden;
+text-overflow:ellipsis;
+pointer-events:none;
+box-shadow:0 4px 12px #25315e55;
+}
+.map-message {
+display:none;
+position:absolute;
+top:12px;
+left:50%;
+transform:translateX(-50%);
+background:#fff1c9;
+border-radius:13px;
+padding:10px;
+font-size:12px;
+font-weight:bold;
+}
+.map-message.show { display:block; }
+.controls {
+padding:12px;
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+background:#f7f9ff;
+color:#71809d;
+font-size:12px;
+font-weight:900;
+}
+.sidebar { display:grid;gap:13px; }
+.panel {
+border-radius:22px;
+padding:17px;
+background:white;
+box-shadow:var(--shadow);
+}
+.panel h3 { margin:0 0 12px;font-size:17px; }
+.panel p { color:var(--muted);font-size:12px;line-height:1.55; }
+.science-panel { order:-1; }
+.science-status {
+padding:11px;
+border-radius:14px;
+background:#edf6ff;
+color:#4b75a7;
+font-weight:900;
+font-size:12px;
+overflow-wrap:anywhere;
+}
+.source-text {
+font-size:11px;
+color:#8490aa;
+overflow-wrap:anywhere;
+margin-top:8px;
+}
+.panel-btn {
+width:100%;
+padding:10px;
+border-radius:12px;
+background:#f2f8ff;
+border:2px solid #dceafd;
+color:#496f9b;
+font-weight:900;
+}
+.mission-line { display:flex;align-items:center;gap:11px; }
+.mission-icon {
+display:grid;
+place-items:center;
+width:56px;
+height:56px;
+border-radius:16px;
+background:#fff0d1;
+font-size:30px;
+}
+.mission-title { font-weight:900;font-size:15px; }
+.mission-sub { font-size:11px;color:#8791a9;margin-top:4px; }
+.progress { display:flex;gap:6px;margin-top:12px; }
+.progress i {
+flex:1;
+height:12px;
+border-radius:7px;
+background:#e8eaf5;
+}
+.progress i.done { background:#79dbad; }
+.progress i.now { background:#ffc66b; }
+.progress i.broken { background:#e87891; }
+.life-formula {
+text-align:center;
+font-size:12px;
+font-weight:900;
+color:#318d75;
+background:#e9faf2;
+border-radius:12px;
+padding:9px;
+margin-top:12px;
+}
+.crew-grid { display:flex;justify-content:space-around;gap:6px; }
+.crew-card { text-align:center;font-size:11px;font-weight:900; }
+.crew-face {
+display:grid;
+place-items:center;
+width:45px;
+height:45px;
+border-radius:50%;
+margin:0 auto 5px;
+border:3px solid #e9eaf8;
+font-size:22px;
+}
+.score-row {
+display:flex;
+align-items:center;
+gap:8px;
+padding:9px 4px;
+border-bottom:1px solid #edf0f9;
+font-size:12px;
+}
+.score-row:last-child { border-bottom:0; }
+.score-row.me { background:#fff5dc;border-radius:10px; }
+.score-name { flex:1;font-weight:900; }
+.score-name small { display:block;color:#8390aa;font-size:10px; }
+.score-points { font-weight:900; }
+.score-points small { display:block;color:#8d96aa;font-size:9px; }
+.overlay {
+display:none;
+position:fixed;
+inset:0;
+z-index:20;
+background:#161e46bd;
+backdrop-filter:blur(7px);
+padding:15px;
+justify-content:center;
+align-items:center;
+}
+.overlay.open { display:flex; }
+.dialog {
+position:relative;
+max-height:calc(100vh - 30px);
+overflow:auto;
+width:min(660px,100%);
+padding:23px;
+border:6px solid white;
+border-radius:31px;
+background:#fffefa;
+box-shadow:0 25px 70px #090f3280;
+text-align:center;
+}
+.dialog h1 {
+font-size:clamp(25px,4vw,37px);
+margin:8px 0;
+}
+.dialog h2 {
+font-size:clamp(22px,3vw,29px);
+margin:8px 0;
+}
+.dialog p { font-size:13px;color:#6d7897;line-height:1.55; }
+.big-icon { font-size:55px; }
+.eyebrow {
+color:#9680b6;
+letter-spacing:1.5px;
+font-size:12px;
+font-weight:900;
+}
+.close {
+position:absolute;
+right:12px;
+top:12px;
+border:0;
+border-radius:50%;
+background:#eeeefa;
+width:38px;
+height:38px;
+color:#59638c;
+font-size:22px;
+}
+.primary,.secondary {
+padding:13px 22px;
+border-radius:16px;
+font-weight:900;
+}
+.primary {
+border:0;
+background:linear-gradient(#ffe7a1,#ffca6b);
+color:#364272;
+box-shadow:0 5px 0 #e7a959;
+}
+.secondary {
+border:2px solid #dfe6f7;
+background:#eff2ff;
+color:#52638c;
+}
+.button-row {
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+margin-top:18px;
+}
+.avatars,.choices {
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin:15px 0;
+}
+.avatars { grid-template-columns:repeat(4,1fr); }
+.avatar,.choice {
+border:3px solid #e2e6f5;
+background:#f8f9ff;
+border-radius:20px;
+padding:15px 8px;
+color:#41517d;
+font-weight:900;
+}
+.avatar { min-height:130px; }
+.avatar .picture,.choice .picture {
+display:block;
+font-size:42px;
+margin-bottom:7px;
+}
+.avatar small,.choice small {
+display:block;
+color:#7f8ba4;
+font-size:11px;
+margin-top:6px;
+}
+.avatar.selected,.choice.selected {
+border-color:#ffbf66;
+background:#fff5e0;
+box-shadow:0 4px 0 #ffe0b1;
+}
+.choice { min-height:165px; }
+.choice strong { display:block;font-size:17px; }
+.choice.disabled { opacity:.65; }
+.choice.dangerous { border-color:#e77890;background:#fff1f4; }
+.effects {
+display:flex;
+justify-content:center;
+gap:5px;
+flex-wrap:wrap;
+margin:9px 0;
+}
+.effect {
+display:inline-block;
+background:white;
+border:1px solid #e4e8f8;
+border-radius:11px;
+padding:5px 8px;
+font-size:15px;
+font-weight:900;
+}
+.positive { color:#228c73; }
+.negative { color:#c35972; }
+.hint,.notice,.science-note {
+padding:10px;
+margin:12px 0;
+border-radius:13px;
+font-weight:900;
+font-size:12px;
+}
+.hint { background:#f2f5ff;color:#657593; }
+.notice { background:#fff2d5;color:#765f7f; }
+.science-note { background:#e9f8f4;color:#377d71; }
+.resources {
+margin:13px 0;
+padding:12px;
+background:#f4f7ff;
+border:2px solid #e1e8fb;
+border-radius:18px;
+}
+.resources-title { font-size:12px;color:#657390;font-weight:900; }
+.resource-grid {
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-top:9px;
+}
+.resource-box {
+background:white;
+border:1px solid #e2e7f5;
+border-radius:13px;
+padding:9px 5px;
+}
+.resource-box h4 { margin:0;font-size:11px; }
+.resource-box small {
+display:block;
+font-size:11px;
+margin-top:5px;
+}
+.puzzle {
+background:linear-gradient(140deg,#edf8ff,#fff3e8);
+border:3px dashed #d6e5f6;
+border-radius:24px;
+padding:15px;
+margin:14px 0;
+}
+.tiles {
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+.tiles.two {
+grid-template-columns:repeat(2,1fr);
+max-width:400px;
+margin:auto;
+}
+.tile {
+min-height:97px;
+background:white;
+border:3px solid #e0e6f4;
+border-radius:18px;
+font-size:37px;
+color:#42537d;
+}
+.tile.selected {
+border-color:#ffc067;
+box-shadow:0 0 0 3px #ffe7b9;
+}
+.tile.done { background:#e9fff3;border-color:#94e0b7; }
+.progress-text { font-weight:900;margin-top:12px;color:#617293; }
+.mistakes { margin:10px;font-weight:900;color:#b55d75; }
+.fact-box {
+padding:12px;
+border-radius:16px;
+background:#eef9f5;
+font-size:13px;
+line-height:1.5;
+margin:12px 0;
+}
+.science-content {
+text-align:left;
+background:#f0f7ff;
+padding:16px;
+border-radius:18px;
+font-size:13px;
+line-height:1.6;
+color:#52658c;
+}
+.science-content a {
+color:#315f9e;
+overflow-wrap:anywhere;
+}
+.science-content section { margin-bottom:17px; }
+.science-content strong { color:#344d83; }
+.communication {
+padding:18px;
+background:#edf7ff;
+border:2px solid #dce9fa;
+border-radius:20px;
+margin:16px 0;
+}
+.communication .symbol { font-size:48px;margin:8px; }
+.communication-track {
+height:14px;
+max-width:320px;
+background:#dce6fa;
+border-radius:20px;
+overflow:hidden;
+margin:15px auto;
+}
+.communication-track div {
+width:0;
+height:100%;
+background:linear-gradient(90deg,#7bd4da,#9c8de9);
+transition:width 1.2s linear;
+}
+.stars { font-size:56px;color:#efbe4f;letter-spacing:5px; }
+.final-score { font-size:44px;font-weight:1000;color:#43558b; }
+.toast {
+position:fixed;
+z-index:30;
+bottom:20px;
+left:50%;
+transform:translate(-50%,100px);
+opacity:0;
+transition:.2s;
+border-radius:14px;
+padding:12px 18px;
+background:white;
+box-shadow:0 10px 30px #12183966;
+font-size:13px;
+font-weight:900;
+pointer-events:none;
+}
+.toast.show { transform:translate(-50%,0);opacity:1; }
+.dpad,.touch-play { display:none; }
+@media(max-width:1000px) {
+.layout { grid-template-columns:1fr; }
+.sidebar { grid-template-columns:repeat(3,1fr); }
+}
+@media(max-width:650px) {
+.app { padding:8px; }
+.logo strong { font-size:19px; }
+.counter { display:none; }
+.toolbar button { padding:8px;font-size:11px; }
+.sidebar { grid-template-columns:1fr; }
+.meters { gap:4px;padding:6px; }
+.meter { padding:6px; }
+.meter-top { font-size:9px; }
+.bar i { height:8px; }
+.dialog { padding:12px; }
+.avatars { gap:5px; }
+.avatar { padding:9px 3px;min-height:105px;font-size:11px; }
+.avatar .picture { font-size:30px; }
+.choice { padding:10px 5px; }
+.choice .picture { font-size:32px; }
+.tiles { gap:5px; }
+.tile { font-size:29px;min-height:75px; }
+.resource-grid { gap:3px; }
+.resource-box { padding:6px 3px; }
+.map-hint { font-size:10px; }
+.dpad {
+display:grid;
+position:absolute;
+bottom:13px;
+left:12px;
+grid-template-columns:repeat(3,35px);
+gap:3px;
+}
+.dpad button {
+border:0;
+border-radius:10px;
+background:#ffffffe5;
+color:#495b89;
+padding:8px;
+touch-action:none;
+}
+.touch-play {
+display:block;
+position:absolute;
+bottom:26px;
+right:15px;
+height:64px;
+width:64px;
+border:0;
+border-radius:50%;
+background:#fff0c9;
+color:#425384;
+font-weight:900;
+touch-action:none;
+}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="logo">
+<span class="logo-icon">🌙</span>
+<div>
+<strong>AstroBorneo</strong>
+<small>MISSION SURVIVAL ACADEMY</small>
+</div>
+</div>
+<div class="toolbar">
+<span class="counter" id="missionCount">MISSION 1 / 5</span>
+<button id="musicButton">🎵 Music On</button>
+<button id="scienceButton">🔬 NASA Info</button>
+<button id="restartButton">↻ Restart</button>
+</div>
+</header>
+<div class="layout">
+<main class="stage">
+<div class="meters" id="meters"></div>
+<div class="map-wrap">
+<canvas id="moonMap" width="960" height="600"
+aria-label="Interactive AstroBorneo moonbase map"></canvas>
+<div id="mapHint" class="map-hint">
+WASD / Arrows · SPACE Play
+</div>
+<div id="mapMessage" class="map-message"></div>
+<div class="dpad">
+<span></span>
+<button data-dir="ArrowUp">▲</button>
+<span></span>
+<button data-dir="ArrowLeft">◀</button>
+<span></span>
+<button data-dir="ArrowDown">▼</button>
+<button data-dir="ArrowRight">▶</button>
+</div>
+<button class="touch-play" id="touchPlay">SPACE</button>
+</div>
+<div class="controls">
+<span>✨ Follow the sparkling building!</span>
+<span>WASD / Arrows Move · SPACE Play</span>
+</div>
+</main>
+<aside class="sidebar">
+<section class="panel">
+<h3>🚀 Your Mission</h3>
+<div class="mission-line">
+<div class="mission-icon" id="missionIcon">☀️</div>
+<div>
+<div class="mission-title" id="missionTitle"></div>
+<div class="mission-sub" id="missionSubtitle"></div>
+</div>
+</div>
+<p id="missionDescription"></p>
+<div class="life-formula">💨 + 💧 + 🌱 = 💚 LIFE</div>
+<div class="progress" id="missionProgress"></div>
+<p>Find the glowing building to play!</p>
+</section>
+<section class="panel">
+<h3>👩‍🚀 Moon Crew</h3>
+<div class="crew-grid" id="crewGrid"></div>
+<p>Pick your astronaut and explore together!</p>
+</section>
+<section class="panel">
+<h3>🏆 Score Board</h3>
+<div id="scoreBoard"></div>
+<p id="currentScore">Current run: 100 / 100</p>
+</section>
+<section class="panel science-panel">
+<h3>🔬 NASA + CSA Science</h3>
+<div class="science-status" id="scienceStatus">
+Loading NASA RadLab…
+</div>
+<p id="scienceDescription">
+NASA radiation and plant research
+</p>
+<div class="source-text" id="scienceSource">
+CSA Food Production Toolkit
+</div>
+<button class="panel-btn" id="scienceDetails">
+Science Sources &amp; Data ↗
+</button>
+</section>
+</aside>
+</div>
+</div>
+<div class="overlay open" id="overlay"
+role="dialog" aria-modal="true">
+<div class="dialog" id="dialog"></div>
+</div>
+<div class="toast" id="toast" aria-live="polite"></div>
+<script>
+(() => {
+"use strict";
+const RADLAB_API_URL =
+"https://visualization.osdr.nasa.gov/radlab/api/?" +
+"spacecraft=ISS&instrument=DosTel" +
+"&timestamp%3E=2022-04-01T23%3A00" +
+"&timestamp%3C2022-04-02T01%3A05" +
+"&absorbed_dose_rate&format=json";
+const RADLAB_DOCUMENTATION =
+"https://visualization.osdr.nasa.gov/radlab/gui/data-api/";
+const RADLAB_SOURCE_URL =
+"https://visualization.osdr.nasa.gov/radlab/api/?" +
+"spacecraft=ISS&instrument=DosTel" +
+"&timestamp%3E=2022-04-01T23%3A00" +
+"&timestamp%3C2022-04-02T01%3A05" +
+"&absorbed_dose_rate%3E2&format=html";
+const OSDR_API_URL =
+"https://osdr.nasa.gov/osdr/data/osd/meta/314";
+const OSDR_STUDY_URL =
+"https://osdr.nasa.gov/bio/repo/data/studies/OSD-314";
+const CSA_TOOLKIT_URL =
+"https://www.asc-csa.gc.ca/eng/youth-educators/" +
+"toolkits/food-production/";
+const RADLAB_ARCHIVE = [
+{
+timestamp:"2022-04-01T23:00:00",
+instrument:"DosTel2",
+doseRate:10.2160856666667
+},
+{
+timestamp:"2022-04-01T23:00:00",
+instrument:"DosTel1",
+doseRate:9.815504
+},
+{
+timestamp:"2022-04-01T23:00:35",
+instrument:"DosTel2",
+doseRate:11.088263
+},
+{
+timestamp:"2022-04-01T23:02:13",
+instrument:"DosTel1",
+doseRate:7.949537
+},
+{
+timestamp:"2022-04-01T23:02:15",
+instrument:"DosTel2",
+doseRate:8.210985
+},
+{
+timestamp:"2022-04-01T23:03:53",
+instrument:"DosTel1",
+doseRate:6.228811
+}
+];
+const $ = id => document.getElementById(id);
+const canvas = $("moonMap");
+const ctx = canvas.getContext("2d");
+const MAX_RESOURCE = 10;
+function clamp(value,min,max) {
+return Math.max(min,Math.min(max,value));
+}
+function escapeHTML(value) {
+return String(value ?? "").replace(/[&<>"']/g,char => ({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+})[char]);
+}
+function randomItem(array) {
+return array[Math.floor(Math.random()*array.length)];
+}
+function shuffle(array) {
+const result = [...array];
+for(let i=result.length-1;i>0;i--) {
+const j=Math.floor(Math.random()*(i+1));
+[result[i],result[j]]=[result[j],result[i]];
+}
+return result;
+}
+const RESOURCE_TYPES = [
+["power","⚡","POWER"],
+["life","💚","LIFE"],
+["safety","🛡️","SAFETY"]
+];
+const CREW = [
+{
+name:"Luna",
+title:"Leader",
+icon:"🎀",
+mark:"★",
+color:"#ff9cca",
+skin:"#edbb9d"
+},
+{
+name:"Kiko",
+title:"Engineer",
+icon:"🛠️",
+mark:"⚙",
+color:"#85ceff",
+skin:"#e1ac86"
+},
+{
+name:"Mimi",
+title:"Gardener",
+icon:"🌱",
+mark:"✿",
+color:"#91dfb7",
+skin:"#f1c4a5"
+},
+{
+name:"Bobo",
+title:"Explorer",
+icon:"🚀",
+mark:"☾",
+color:"#d4a6fa",
+skin:"#bb8767"
+}
+];
+const MISSIONS = [
+{
+name:"Clean the Solar Panels!",
+short:"POWER",
+icon:"☀️",
+position:[176,154],
+color:"#ffcf79",
+tip:"Dusty panels! Help us make power.",
+fact:"Moon dust can reduce the power made by solar panels.",
+choices:[
+{
+name:"ROBOT",
+icon:"🤖",
+description:"Robot cleans the panels",
+effect:{power:5,safety:-1}
+},
+{
+name:"CREW",
+icon:"👩‍🚀",
+description:"Crew works outside",
+effect:{power:4,safety:-2}
+}
+]
+},
+{
+name:"Fix the Air Machine!",
+short:"AIR",
+icon:"🫧",
+position:[775,157],
+color:"#a8dfff",
+tip:"Match the parts to fix the air machine.",
+fact:"Air systems need filters, repairs and electricity.",
+choices:[
+{
+name:"BACKUP",
+icon:"🔋",
+description:"Uses more power",
+effect:{power:-3,life:4}
+},
+{
+name:"REPAIR",
+icon:"🧰",
+description:"Crew fixes the machine",
+effect:{power:-2,safety:-2,life:3}
+}
+]
+},
+{
+name:"Connect the Water!",
+short:"WATER",
+icon:"💧",
+position:[176,432],
+color:"#9ad9ff",
+tip:"Turn the pipes to recycle water.",
+fact:"Water recycling saves supplies but needs energy. CSA provides learning resources about food and water in space.",
+choices:[
+{
+name:"ECO",
+icon:"🍃",
+description:"Use less power",
+effect:{power:-2,life:2}
+},
+{
+name:"FAST",
+icon:"💦",
+description:"Use more power",
+effect:{power:-4,life:4}
+}
+]
+},
+{
+name:"Grow Space Food!",
+short:"FOOD",
+icon:"🌱",
+position:[480,139],
+color:"#a6e9b7",
+tip:"Help plants grow with light and water.",
+fact:"NASA OSDR-314 investigated red-light responses in spaceflight plant seedlings. CSA provides food-production education.",
+choices:[
+{
+name:"RED LIGHT",
+icon:"🔴",
+description:"More energy for light",
+effect:{power:-4,life:3}
+},
+{
+name:"LOW LIGHT",
+icon:"🌙",
+description:"Save energy",
+effect:{power:-2,life:1}
+}
+]
+},
+{
+name:"Protect the Moon Crew!",
+short:"SAFETY",
+icon:"🛡️",
+position:[777,432],
+color:"#cbb7f8",
+tip:"Choose how to protect the astronauts.",
+fact:"NASA RadLab measures radiation aboard the ISS, not on the Moon. Our resource effects are simplified game simulations.",
+choices:[
+{
+name:"SHIELD",
+icon:"🛡️",
+description:"Use power for shielding",
+effect:{power:-3,safety:5}
+},
+{
+name:"SHELTER",
+icon:"🏠",
+description:"Pause work and shelter",
+effect:{life:-4,safety:3}
+}
+]
+}
+];
+const STOPS = [
+{name:"POWER",x:176,y:254,icon:"🧽"},
+{name:"FOOD",x:480,y:244,icon:"🌱"},
+{name:"AIR",x:775,y:254,icon:"🔧"},
+{name:"SAFETY",x:775,y:532,icon:"🛡️"},
+{name:"HOME",x:480,y:532,icon:"⭐"},
+{name:"WATER",x:176,y:532,icon:"💧"}
+];
+const game = {
+started:false,
+finished:false,
+failed:false,
+avatar:0,
+mission:0,
+resources:{
+power:6,
+life:6,
+safety:6
+},
+player:{
+x:480,
+y:337,
+direction:1,
+walk:0
+},
+npcs:[],
+modal:"intro",
+phase:"",
+selected:0,
+chosenPlan:0,
+puzzle:null,
+puzzleUnlocked:[false,false,false,false,false],
+feedback:"",
+mistakes:[0,0,0,0,0],
+stationStatus:[
+"pending",
+"pending",
+"pending",
+"pending",
+"pending"
+],
+totalMistakes:0,
+score:100,
+failureReason:"",
+musicEnabled:true,
+pressed:new Set(),
+previousModal:null,
+homeDone:false,
+communicationPhase:"idle",
+communicationChoice:0,
+communicationToken:0,
+safetyScenario:null,
+toastTimer:null,
+noticeUntil:0,
+research:{
+requestToken:0,
+radlab:{
+origin:"archive",
+status:"historical",
+records:RADLAB_ARCHIVE,
+selected:RADLAB_ARCHIVE[0]
+},
+osdrStatus:"reference",
+csaStatus:"reference"
+}
+};
+function normalizeRadLab(payload) {
+const found=[];
+const seen=new Set();
+function scan(obj,depth=0) {
+if(!obj || typeof obj!=="object" || depth>6) return;
+if(seen.has(obj) || found.length>=1500) return;
+seen.add(obj);
+if(Array.isArray(obj)) {
+for(const row of obj.slice(0,1500)) {
+scan(row,depth+1);
+}
+return;
+}
+const value =
+obj.absorbed_dose_rate ??
+obj.absorbedDoseRate ??
+obj.dose_rate ??
+obj.doseRate;
+if(value!==null && value!==undefined && value!=="") {
+const dose=Number(value);
+if(Number.isFinite(dose) && dose>=0 && dose<1000000) {
+found.push({
+doseRate:dose,
+timestamp:String(
+obj.timestamp ??
+obj.time ??
+obj.date ??
+""
+),
+instrument:String(
+obj.instrument_id ??
+obj.instrument ??
+"DosTel"
+)
+});
+return;
+}
+}
+for(const child of Object.values(obj).slice(0,60)) {
+if(child && typeof child==="object") {
+scan(child,depth+1);
+}
+}
+}
+scan(payload);
+return found;
+}
+async function fetchJSON(url,timeout=7000) {
+const controller=new AbortController();
+const timer=setTimeout(()=>controller.abort(),timeout);
+try {
+const response=await fetch(url,{
+signal:controller.signal,
+cache:"no-store"
+});
+if(!response.ok) {
+throw new Error("HTTP "+response.status);
+}
+return await response.json();
+} finally {
+clearTimeout(timer);
+}
+}
+function selectReading(records) {
+if(!records.length) return null;
+return randomItem(records);
+}
+async function loadResearch() {
+const token=++game.research.requestToken;
+game.research.radlab={
+origin:"archive",
+status:"historical",
+records:RADLAB_ARCHIVE,
+selected:selectReading(RADLAB_ARCHIVE)
+};
+game.research.osdrStatus="loading";
+updateSciencePanel();
+const results=await Promise.allSettled([
+fetchJSON(RADLAB_API_URL),
+fetchJSON(OSDR_API_URL)
+]);
+if(token!==game.research.requestToken) return;
+let records=[];
+if(results[0].status==="fulfilled") {
+records=normalizeRadLab(results[0].value);
+}
+if(records.length) {
+game.research.radlab={
+origin:"api",
+status:"online",
+records,
+selected:selectReading(records)
+};
+} else {
+game.research.radlab={
+origin:"archive",
+status:"historical",
+records:RADLAB_ARCHIVE,
+selected:selectReading(RADLAB_ARCHIVE)
+};
+}
+game.research.osdrStatus=
+results[1].status==="fulfilled" &&
+results[1].value &&
+typeof results[1].value==="object"
+? "online"
+: "reference";
+updateSciencePanel();
+}
+function chooseSafetyScenario() {
+const data=game.research.radlab;
+if(!data.records.length || !data.selected) {
+return {
+level:"practice",
+source:"simulation",
+record:null,
+penalty:-2
+};
+}
+const values=data.records
+.map(row=>row.doseRate)
+.sort((a,b)=>a-b);
+const median=values[Math.floor(values.length/2)];
+const reading=data.selected;
+return {
+level:reading.doseRate>median ? "higher" : "lower",
+source:data.origin,
+record:{...reading},
+penalty:reading.doseRate>median ? -3 : -1
+};
+}
+function safetyOptions() {
+if(game.mission!==4) {
+return MISSIONS[game.mission].choices;
+}
+const scenario=game.safetyScenario || chooseSafetyScenario();
+return MISSIONS[4].choices.map(choice=>({
+...choice,
+effect:{
+...choice.effect,
+safety:choice.effect.safety+scenario.penalty
+}
+}));
+}
+function currentOptions() {
+return game.mission===4
+? safetyOptions()
+: MISSIONS[game.mission].choices;
+}
+function radiationMessage() {
+const scenario=game.safetyScenario || chooseSafetyScenario();
+if(scenario.level==="higher") {
+return "🟠 HIGHER ISS SAMPLE · Safety −3";
+}
+if(scenario.level==="lower") {
+return "🟢 LOWER ISS SAMPLE · Safety −1";
+}
+return "🟣 PRACTICE MODE · Safety −2";
+}
+function updateSciencePanel() {
+const rad=game.research.radlab;
+const locked=game.safetyScenario;
+const record=locked?.record || rad.selected;
+const origin=locked?.source || rad.origin;
+if(record) {
+$("scienceStatus").textContent=
+"NASA RadLab ISS: "+
+record.doseRate.toFixed(3)+
+" µGy/h";
+$("scienceDescription").textContent=
+(locked ? "Mission 5 sample locked · " : "")+
+(origin==="api" ? "API data" : "Verified 2022 archive")+
+" · "+
+record.timestamp+
+" · ISS, not Moon";
+} else {
+$("scienceStatus").textContent="RadLab Practice Mode";
+$("scienceDescription").textContent=
+"No radiation measurement loaded";
+}
+$("scienceSource").textContent=
+"OSDR-314: "+
+(game.research.osdrStatus==="online"
+? "Metadata retrieved"
+: "Published study reference")+
+" · CSA Food Toolkit";
+}
+function researchHTML() {
+const rad=game.research.radlab;
+const scenario=game.safetyScenario;
+const record=scenario?.record || rad.selected;
+const origin=scenario?.source || rad.origin;
+return `
+<div class="science-content">
+<section>
+<strong>🛰️ NASA RadLab — Radiation</strong>
+<p>
+${
+record
+? `ISS recorded dose rate:
+<strong>${record.doseRate.toFixed(3)} µGy/h</strong>
+<br>
+Recorded: ${escapeHTML(record.timestamp)}
+<br>
+Instrument: ${escapeHTML(record.instrument)}
+<br>
+Source: ${origin==="api"
+? "API response"
+: "Verified 2022 archived record"}`
+: "No verified measurement is available."
+}
+</p>
+<p>
+These readings were measured aboard the
+International Space Station, not on the Moon.
+The game compares samples for learning.
+It does not predict radiation danger.
+</p>
+<a href="${RADLAB_DOCUMENTATION}"
+target="_blank" rel="noopener noreferrer">
+RadLab Data API Documentation
+</a>
+<p>
+<a href="${RADLAB_SOURCE_URL}"
+target="_blank" rel="noopener noreferrer">
+Verify historical ISS measurements
+</a>
+</p>
+</section>
+<section>
+<strong>🌱 NASA OSDR — Plant Research</strong>
+<p>
+NASA OSDR study OSD-314 examined the
+response of Arabidopsis seedlings to red light
+in spaceflight and simulated partial gravity.
+</p>
+<p>
+Metadata:
+${game.research.osdrStatus==="online"
+? "API response retrieved"
+: "Official study reference available"}
+</p>
+<p>
+This science inspires the RED LIGHT and LOW
+LIGHT choices in Food Mission.
+Game points are educational simulations.
+</p>
+<a href="${OSDR_STUDY_URL}"
+target="_blank" rel="noopener noreferrer">
+Official OSDR-314 Study
+</a>
+</section>
+<section>
+<strong>🍃 Canadian Space Agency — Food Toolkit</strong>
+<p>
+CSA educational resources cover growing food,
+nutrition and recycling water in space.
+</p>
+<p>
+They support the Food and Water Missions.
+This is a teaching resource, not a live API.
+</p>
+<a href="${CSA_TOOLKIT_URL}"
+target="_blank" rel="noopener noreferrer">
+CSA Food Production on the Moon
+</a>
+</section>
+<section>
+<strong>📡 Earth–Moon Communication</strong>
+<p>
+Approximate light travel:
+1.3 seconds one way and 2.6 seconds round trip.
+Our communication animation is simplified.
+</p>
+</section>
+<p>
+NASA and CSA provide scientific resources.
+Neither agency endorses this game.
+</p>
+</div>
+`;
+}
+const sound = {
+context:null,
+timer:null,
+playing:false,
+step:0,
+next:0,
+frequencies:[
+659,784,880,784,
+659,587,523,659,
+784,880,784,659,
+587,523,392,523
+],
+init() {
+if(this.context) return true;
+const AudioContextClass=
+window.AudioContext ||
+window.webkitAudioContext;
+if(!AudioContextClass) return false;
+this.context=new AudioContextClass();
+return true;
+},
+tone(frequency,duration=0.12,volume=0.025,when=null) {
+if(!game.musicEnabled || !this.init()) return;
+const context=this.context;
+const start=when ?? context.currentTime;
+const oscillator=context.createOscillator();
+const gain=context.createGain();
+oscillator.type="sine";
+oscillator.frequency.value=frequency;
+gain.gain.setValueAtTime(0.0001,start);
+gain.gain.exponentialRampToValueAtTime(
+Math.max(0.0002,volume),
+start+0.015
+);
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+start+duration
+);
+oscillator.connect(gain);
+gain.connect(context.destination);
+oscillator.start(start);
+oscillator.stop(start+duration+0.02);
+},
+play() {
+if(!game.musicEnabled || !game.started || this.playing) {
+return;
+}
+if(!this.init()) return;
+this.playing=true;
+this.context.resume().then(()=>{
+if(!this.playing || !game.musicEnabled) return;
+const interval=280;
+this.timer=setInterval(()=>{
+if(!this.playing || !game.musicEnabled) return;
+const index=this.step%this.frequencies.length;
+this.tone(this.frequencies[index],0.19,0.018);
+this.step++;
+},interval);
+}).catch(()=>{
+this.playing=false;
+});
+},
+stop() {
+this.playing=false;
+clearInterval(this.timer);
+this.timer=null;
+},
+beep(success=true) {
+if(!game.musicEnabled || !this.init()) return;
+this.context.resume().then(()=>{
+this.tone(success ? 760 : 250,0.12,0.045);
+}).catch(()=>{});
+}
+};
+const SCORE_KEY="AstroBorneo_Scores_v4";
+function emptyScores() {
+return CREW.map(()=>({
+best:0,
+played:false,
+lastStatus:"NOT PLAYED"
+}));
+}
+function readScores() {
+try {
+const data=JSON.parse(
+localStorage.getItem(SCORE_KEY) || "null"
+);
+if(Array.isArray(data) && data.length===4) {
+return data.map(row=>({
+best:clamp(Number(row.best)||0,0,100),
+played:Boolean(row.played),
+lastStatus:String(row.lastStatus||"NOT PLAYED")
+}));
+}
+} catch(error) {}
+return emptyScores();
+}
+const scores=readScores();
+function saveScore(status) {
+if(game.finished) return;
+game.finished=true;
+const row=scores[game.avatar];
+row.played=true;
+row.lastStatus=status;
+if(status==="SUCCESS") {
+row.best=Math.max(row.best,game.score);
+}
+try {
+localStorage.setItem(
+SCORE_KEY,
+JSON.stringify(scores)
+);
+} catch(error) {}
+renderScores();
+}
+function renderScores() {
+const current=index=>
+index===game.avatar &&
+game.started &&
+!game.finished;
+const sorted=CREW
+.map((crew,index)=>({crew,index}))
+.sort((a,b)=>{
+return scores[b.index].best-scores[a.index].best ||
+a.index-b.index;
+});
+$("scoreBoard").innerHTML=sorted.map(({crew,index},rank)=>{
+const record=scores[index];
+const status=current(index)
+? "PLAYING"
+: record.played
+? record.lastStatus
+: "NOT PLAYED";
+const hasBest=record.best>0;
+const score=hasBest ? `${record.best}/100` : "—";
+const bestLabel=hasBest
+? status==="SUCCESS"
+? "BEST SUCCESS SCORE"
+: "PREVIOUS BEST (SUCCESS)"
+: "NO RANKED SCORE";
+return `
+<div class="score-row ${index===game.avatar?"me":""}">
+<span>${hasBest?(rank===0?"👑":rank+1+"."):"—"}</span>
+<span class="crew-face"
+style="background:${crew.color};width:36px;height:36px">
+${crew.mark}
+</span>
+<span class="score-name">
+${crew.name}
+<small>LAST RUN: ${status}</small>
+</span>
+<span class="score-points">
+${score}
+<small>${bestLabel}</small>
+</span>
+</div>
+`;
+}).join("");
+$("currentScore").textContent=game.finished
+? game.failed
+? "Last run: FAILED"
+: game.stationStatus.every(x=>x==="done")
+? `Last run: SUCCESS · ${game.score}/100`
+: "Last run: PARTIAL"
+: game.started
+? `Current run: ${game.score}/100`
+: "Choose an astronaut to play";
+}
+function resourceBar(type,value) {
+return `<div class="bar">${
+Array.from({length:MAX_RESOURCE},(_,i)=>
+`<i class="${i<value?type:""}"></i>`
+).join("")
+}</div>`;
+}
+function renderMeters() {
+$("meters").innerHTML=RESOURCE_TYPES.map(
+([type,icon,label])=>`
+<div class="meter">
+<div class="meter-top">
+${icon} ${label}
+<span>${game.resources[type]}/10</span>
+</div>
+${resourceBar(type,game.resources[type])}
+</div>
+`
+).join("");
+}
+function effectHTML(effect) {
+return `<div class="effects">${
+Object.entries(effect).map(([type,value])=>{
+const resource=RESOURCE_TYPES.find(r=>r[0]===type);
+return `
+<span class="effect ${
+value<0?"negative":"positive"
+}">
+${resource[1]} ${value>0?"+":""}${value}
+</span>
+`;
+}).join("")
+}</div>`;
+}
+function resourcePreview(effect=null) {
+return `
+<div class="resources">
+<div class="resources-title">
+🌙 MOONBASE RESOURCES
+${effect?"· BEFORE → AFTER":""}
+</div>
+<div class="resource-grid">
+${RESOURCE_TYPES.map(([type,icon,label])=>{
+const current=game.resources[type];
+const next=clamp(
+current+(effect?.[type]||0),
+0,
+MAX_RESOURCE
+);
+return `
+<div class="resource-box">
+<h4>${icon} ${label}</h4>
+<small>NOW ${current}/10</small>
+${resourceBar(type,current)}
+${
+effect
+? `<small>AFTER ${next}/10</small>
+${resourceBar(type,next)}`
+: ""
+}
+</div>
+`;
+}).join("")}
+</div>
+</div>
+`;
+}
+function renderHUD() {
+renderMeters();
+renderScores();
+const completed=game.mission>=5;
+const mission=MISSIONS[Math.min(game.mission,4)];
+const needsHome=game.mission===4&&!game.homeDone;
+$("missionCount").textContent=completed
+? "5 / 5 COMPLETE"
+: `MISSION ${game.mission+1} / 5`;
+$("missionIcon").textContent=completed
+? "🏆"
+: needsHome
+? "📡"
+: mission.icon;
+$("missionTitle").textContent=completed
+? "Moon Hero!"
+: needsHome
+? "Call Earth at HOME!"
+: mission.name;
+$("missionSubtitle").textContent=completed
+? "All missions complete"
+: needsHome
+? "Mission 5 · HOME RADIO"
+: `Mission ${game.mission+1} · ${mission.short}`;
+$("missionDescription").textContent=completed
+? "Your adventure is complete."
+: needsHome
+? "Visit HOME for a message from Earth."
+: mission.tip;
+$("missionProgress").innerHTML=MISSIONS.map((_,index)=>{
+const status=game.stationStatus[index];
+const cls=status==="done"
+? "done"
+: status==="broken"
+? "broken"
+: index===game.mission
+? "now"
+: "";
+return `<i class="${cls}"></i>`;
+}).join("");
+$("crewGrid").innerHTML=CREW.map((crew,index)=>`
+<div class="crew-card">
+<div class="crew-face"
+style="background:${crew.color}">
+${crew.mark}
+</div>
+${crew.name}${index===game.avatar?" ★":""}
+</div>
+`).join("");
+}
+function showModal(html,type) {
+game.modal=type;
+$("dialog").innerHTML=html;
+$("overlay").classList.add("open");
+}
+function hideModal() {
+game.modal="";
+$("overlay").classList.remove("open");
+$("dialog").innerHTML="";
+game.pressed.clear();
+}
+function toast(message) {
+$("toast").textContent=message;
+$("toast").classList.add("show");
+clearTimeout(game.toastTimer);
+game.toastTimer=setTimeout(()=>{
+$("toast").classList.remove("show");
+},1900);
+}
+function showMapMessage(message) {
+$("mapMessage").textContent=message;
+$("mapMessage").classList.add("show");
+game.noticeUntil=performance.now()+1800;
+}
+function showIntroduction() {
+showModal(`
+<button class="close" id="closeIntro">×</button>
+<div class="big-icon">🚀🌙✨</div>
+<div class="eyebrow">WELCOME TO THE MOON</div>
+<h1>Help Our Moon Crew!</h1>
+<p>Explore 6 facilities. Complete 5 missions!</p>
+<div class="eyebrow">PICK YOUR ASTRONAUT</div>
+<div class="avatars">
+${CREW.map((crew,index)=>`
+<button class="avatar ${
+game.avatar===index?"selected":""
+}" data-avatar="${index}">
+<span class="picture">${crew.icon}</span>
+${crew.name}
+<small>${crew.title}</small>
+</button>
+`).join("")}
+</div>
+<div class="hint">
+← ↑ ↓ → Select · SPACE / ENTER Play
+</div>
+<button class="primary" id="startGame">
+🚀 LET'S PLAY!
+</button>
+<p>🌟 No timer · Just explore!</p>
+`,"intro");
+document.querySelectorAll("[data-avatar]").forEach(button=>{
+button.onclick=()=>{
+setAvatar(Number(button.dataset.avatar));
+};
+});
+$("closeIntro").onclick=startGame;
+$("startGame").onclick=startGame;
+renderHUD();
+}
+function setAvatar(index) {
+game.avatar=(index+CREW.length)%CREW.length;
+document.querySelectorAll("[data-avatar]").forEach(button=>{
+button.classList.toggle(
+"selected",
+Number(button.dataset.avatar)===game.avatar
+);
+});
+createNPCs();
+renderHUD();
+sound.beep(true);
+}
+function startGame() {
+if(game.started) return;
+game.started=true;
+hideModal();
+renderHUD();
+toast("Find the glowing POWER station!");
+sound.play();
+}
+function showRestart() {
+if(game.modal==="restart") return;
+game.previousModal={
+modal:game.modal,
+phase:game.phase
+};
+showModal(`
+<div class="big-icon">🌙🚀</div>
+<h2>Start Again?</h2>
+<p>Restart all 5 missions?</p>
+<div class="button-row">
+<button class="secondary" id="keepPlaying">
+KEEP PLAYING
+</button>
+<button class="primary" id="confirmRestart">
+↻ START AGAIN
+</button>
+</div>
+`,"restart");
+$("keepPlaying").onclick=cancelRestart;
+$("confirmRestart").onclick=resetGame;
+}
+function cancelRestart() {
+const previous=game.previousModal;
+game.previousModal=null;
+if(!previous || !previous.modal) {
+hideModal();
+return;
+}
+game.phase=previous.phase;
+switch(previous.modal) {
+case "intro":
+showIntroduction();
+break;
+case "mission":
+renderMission();
+break;
+case "communication":
+renderCommunication();
+break;
+case "science":
+showScience();
+break;
+case "end":
+showEnding();
+break;
+case "failure":
+showFailure();
+break;
+default:
+hideModal();
+}
+}
+function resetGame() {
+sound.stop();
+game.started=false;
+game.finished=false;
+game.failed=false;
+game.avatar=0;
+game.mission=0;
+game.resources={
+power:6,
+life:6,
+safety:6
+};
+game.player={
+x:480,
+y:337,
+direction:1,
+walk:0
+};
+game.modal="";
+game.phase="";
+game.selected=0;
+game.chosenPlan=0;
+game.puzzle=null;
+game.puzzleUnlocked=[false,false,false,false,false];
+game.feedback="";
+game.mistakes=[0,0,0,0,0];
+game.stationStatus=[
+"pending",
+"pending",
+"pending",
+"pending",
+"pending"
+];
+game.totalMistakes=0;
+game.score=100;
+game.failureReason="";
+game.homeDone=false;
+game.communicationPhase="idle";
+game.communicationChoice=0;
+game.communicationToken++;
+game.safetyScenario=null;
+game.pressed.clear();
+const rad=game.research.radlab;
+if(rad.records.length) {
+rad.selected=selectReading(rad.records);
+}
+createNPCs();
+showIntroduction();
+}
+function targetPosition() {
+if(game.mission===4&&!game.homeDone) {
+return [480,435];
+}
+return MISSIONS[Math.min(game.mission,4)].position;
+}
+function isNearTarget() {
+if(game.mission>=5) return false;
+const [x,y]=targetPosition();
+return Math.hypot(
+game.player.x-x,
+game.player.y-y
+)<132;
+}
+function interact() {
+if(!game.started || game.modal || game.finished) return;
+if(!isNearTarget()) {
+showMapMessage("✨ Walk to the glowing station!");
+return;
+}
+if(game.mission===4 && !game.homeDone) {
+openCommunication();
+} else {
+openMission();
+}
+}
+function openCommunication() {
+if(game.homeDone) return;
+if(game.communicationPhase==="idle") {
+game.communicationPhase="outbound";
+const token=++game.communicationToken;
+setTimeout(()=>{
+if(
+token!==game.communicationToken ||
+game.homeDone ||
+game.failed
+)return;
+game.communicationPhase="inbound";
+if(game.modal==="communication") {
+renderCommunication();
+}
+},1300);
+setTimeout(()=>{
+if(
+token!==game.communicationToken ||
+game.homeDone ||
+game.failed
+)return;
+game.communicationPhase="ready";
+if(game.modal==="communication") {
+renderCommunication();
+sound.beep();
+}
+},2600);
+}
+renderCommunication();
+}
+function renderCommunication() {
+const ready=game.communicationPhase==="ready";
+showModal(`
+<button class="close" id="closeCommunication">×</button>
+<div class="big-icon">📡</div>
+<div class="eyebrow">MISSION 5 · HOME RADIO</div>
+<h2>Earth Calling!</h2>
+<div class="communication">
+<div class="symbol">🌙 ⋯ 🌍</div>
+<strong>
+${
+ready
+? "MESSAGE RECEIVED!"
+: game.communicationPhase==="outbound"
+? "Sending to Earth…"
+: "Earth is replying…"
+}
+</strong>
+<div class="communication-track">
+<div style="width:${
+ready
+? "100%"
+: game.communicationPhase==="inbound"
+? "90%"
+: "45%"
+}"></div>
+</div>
+<p>~1.3 seconds each way</p>
+<p>~2.6 seconds round trip</p>
+</div>
+${
+ready
+? `
+<div class="eyebrow">PICK A PLAN</div>
+<div class="choices">
+<button class="choice ${
+game.communicationChoice===0?"selected":""
+}" data-comm="0">
+<span class="picture">🌍</span>
+<strong>ASK EARTH</strong>
+${effectHTML({power:-1,safety:1})}
+<small>Advice costs power</small>
+</button>
+<button class="choice ${
+game.communicationChoice===1?"selected":""
+}" data-comm="1">
+<span class="picture">🧠</span>
+<strong>PLAN SOLO</strong>
+${effectHTML({safety:-1})}
+<small>Save power, take a risk</small>
+</button>
+</div>
+<div class="hint">
+Arrow keys to select · SPACE to confirm
+</div>
+`
+: `
+<div class="hint">
+Signals take time to travel!
+</div>
+`
+}
+<p>
+Communication time and points are simplified
+educational simulations.
+</p>
+`,"communication");
+$("closeCommunication").onclick=hideModal;
+document.querySelectorAll("[data-comm]").forEach(button=>{
+button.onclick=()=>{
+completeCommunication(Number(button.dataset.comm));
+};
+});
+}
+function completeCommunication(choice) {
+if(
+game.modal!=="communication" ||
+game.communicationPhase!=="ready" ||
+game.homeDone
+)return;
+const effect=choice===0
+? {power:-1,safety:1}
+: {safety:-1};
+game.communicationChoice=choice;
+for(const [type,value] of Object.entries(effect)) {
+game.resources[type]=clamp(
+game.resources[type]+value,
+0,
+MAX_RESOURCE
+);
+}
+game.homeDone=true;
+game.communicationToken++;
+game.communicationPhase="done";
+const empty=RESOURCE_TYPES.find(
+([type])=>game.resources[type]<=0
+);
+if(empty) {
+failGame(empty[2]);
+return;
+}
+renderHUD();
+hideModal();
+toast("📡 Earth contact complete! Visit SAFETY.");
+}
+function willSurvive(effect) {
+return RESOURCE_TYPES.every(([type])=>
+game.resources[type]+(effect[type]||0)>0
+);
+}
+function openMission() {
+if(game.mission>=5 || game.failed || game.finished) return;
+if(game.mission===4 && !game.safetyScenario) {
+game.safetyScenario=chooseSafetyScenario();
+updateSciencePanel();
+}
+if(game.stationStatus[game.mission]==="broken") {
+game.phase="broken";
+showBroken();
+return;
+}
+game.selected=0;
+game.feedback="";
+if(game.puzzleUnlocked[game.mission]) {
+game.phase="choose";
+} else {
+game.phase="puzzle";
+if(!game.puzzle) game.puzzle=createPuzzle(game.mission);
+}
+renderMission();
+sound.beep();
+}
+function closeMission() {
+game.phase="";
+hideModal();
+}
+function mistakeHTML() {
+const misses=game.mistakes[game.mission];
+return `
+<div class="mistakes">
+❌ ${misses}/3
+${Array.from({length:3},(_,i)=>
+i<misses ? "🔴" : "⚪"
+).join(" ")}
+</div>
+`;
+}
+function renderMission() {
+if(game.phase==="choose") {
+renderMissionChoices();
+} else if(game.phase==="puzzle") {
+renderPuzzle();
+} else if(game.phase==="result") {
+showMissionResult();
+} else if(game.phase==="broken") {
+showBroken();
+}
+}
+function renderMissionChoices() {
+const mission=MISSIONS[game.mission];
+const options=currentOptions();
+const selected=options[game.selected];
+showModal(`
+<button class="close" id="closeMission">×</button>
+<div class="big-icon">${mission.icon}</div>
+<div class="eyebrow">MISSION ${game.mission+1} OF 5</div>
+<h2>${mission.name}</h2>
+<div class="science-note">✅ MINI GAME CLEARED · NOW CHOOSE A PLAN</div>
+${resourcePreview(selected.effect)}
+${game.mission===4 ? `<div class="science-note">
+${radiationMessage()}
+<p>NASA ISS sample changes Safety cost · not Moon radiation.</p>
+</div>` : ""}
+${game.mission===3 ? `<div class="science-note">🌱 NASA OSDR-314 · CSA Food Toolkit</div>` : ""}
+${game.mission===2 ? `<div class="science-note">💧 CSA Space Food &amp; Water Education</div>` : ""}
+<div class="choices">
+${options.map((choice,index)=>`
+<button class="choice ${game.selected===index?"selected":""} ${willSurvive(choice.effect)?"":"dangerous"}"
+data-plan="${index}">
+<span class="picture">${choice.icon}</span>
+<strong>${choice.name}</strong>
+${effectHTML(choice.effect)}
+<small>${willSurvive(choice.effect)
+? choice.description
+: "⚠️ RESOURCE 0 → MISSION FAILED"}</small>
+</button>
+`).join("")}
+</div>
+<div class="hint">← → Choose · SPACE / ENTER Confirm · ESC Back</div>
+<div class="notice">⚠️ Confirm your plan: resources change NOW. Any 0/10 = MISSION FAILED.</div>
+<div class="science-note">⭐ Game points are simulations, not NASA measurements.</div>
+`,"mission");
+$("closeMission").onclick=closeMission;
+document.querySelectorAll("[data-plan]").forEach(button=>{
+const index=Number(button.dataset.plan);
+button.onclick=()=>selectPlan(index);
+});
+}
+function selectPlan(index) {
+if(game.phase!=="choose" || !game.puzzleUnlocked[game.mission] || game.finished) return;
+const choice=currentOptions()[index];
+if(!choice) return;
+game.selected=index;
+game.chosenPlan=index;
+for(const [type,value] of Object.entries(choice.effect)) {
+game.resources[type]=clamp(game.resources[type]+value,0,MAX_RESOURCE);
+}
+const empty=RESOURCE_TYPES.find(([type])=>game.resources[type]<=0);
+if(empty) {
+failGame(empty[2]);
+return;
+}
+game.stationStatus[game.mission]="done";
+game.phase="result";
+game.puzzle=null;
+renderHUD();
+showMissionResult();
+sound.beep();
+}
+const SHAPES=[
+{id:"circle",icon:"🔵"},
+{id:"triangle",icon:"🔺"},
+{id:"square",icon:"🟨"}
+];
+function createPuzzle(mission) {
+if(mission===0) {
+return {
+tiles:shuffle([
+{type:"dust",done:false},
+{type:"dust",done:false},
+{type:"dust",done:false},
+{type:"rock",done:false},
+{type:"rock",done:false}
+])
+};
+}
+if(mission===1) {
+return {
+shapes:shuffle(SHAPES),
+targets:shuffle(SHAPES.map(s=>s.id)),
+matched:0
+};
+}
+if(mission===2) {
+const pipes=Array.from(
+{length:5},
+()=>Math.random()>0.55
+);
+if(pipes.filter(value=>!value).length<2) {
+pipes[0]=false;
+pipes[2]=false;
+}
+return {pipes};
+}
+if(mission===3) {
+return {
+plants:shuffle([
+...["🌻","🌼","🌷","🌺"].map(flower=>({
+flower,
+stage:Math.random()>0.5 ? 1 : 0,
+decoy:false
+})),
+{flower:"🪨",stage:2,decoy:true},
+{flower:"🌑",stage:2,decoy:true}
+])
+};
+}
+return {
+astronauts:shuffle([
+...CREW.map((person,index)=>({
+index,
+done:false,
+decoy:false,
+icon:"👩‍🚀"
+})).filter(person=>person.index!==game.avatar),
+{
+index:4,
+done:false,
+decoy:true,
+icon:"🪨"
+},
+{
+index:5,
+done:false,
+decoy:true,
+icon:"☀️"
+}
+])
+};
+}
+function renderPuzzle() {
+if(!game.puzzle) return;
+const mission=game.mission;
+const puzzle=game.puzzle;
+let title="";
+let tiles=[];
+let progress="";
+let columns=3;
+const makeTile=(index,icon,done=false)=>`
+<button class="tile ${
+index===game.selected?"selected":""
+} ${done?"done":""}"
+data-tile="${index}">
+${icon}
+</button>
+`;
+if(mission===0) {
+title="Find 3 dusty panels!";
+columns=2;
+tiles=puzzle.tiles.map((tile,index)=>
+makeTile(
+index,
+tile.type==="rock"
+? "🪨"
+: tile.done
+? "✨"
+: "🟫",
+tile.done
+)
+);
+progress=
+puzzle.tiles.filter(tile=>tile.done).length+"/3";
+}
+if(mission===1) {
+const target=SHAPES.find(
+shape=>shape.id===puzzle.targets[puzzle.matched]
+);
+title="Find "+target.icon+"!";
+tiles=puzzle.shapes.map((shape,index)=>
+makeTile(index,shape.icon)
+);
+progress=puzzle.matched+"/3";
+}
+if(mission===2) {
+title="💧 Connect the pipes!";
+tiles=puzzle.pipes.map((connected,index)=>
+makeTile(
+index,
+connected?"━":"┃",
+connected
+)
+);
+progress=
+puzzle.pipes.filter(Boolean).length+"/5";
+}
+if(mission===3) {
+title="🌱 Grow 4 plants!";
+tiles=puzzle.plants.map((plant,index)=>{
+let icon;
+if(plant.decoy) {
+icon=plant.flower;
+} else if(plant.stage===2) {
+icon=plant.flower;
+} else if(plant.stage===1) {
+icon="🌱";
+} else {
+icon="🌰";
+}
+return makeTile(
+index,
+icon,
+!plant.decoy && plant.stage===2
+);
+});
+progress=
+puzzle.plants.filter(
+plant=>!plant.decoy && plant.stage===2
+).length+"/4";
+}
+if(mission===4) {
+title="👩‍🚀 Bring 3 crew members home!";
+tiles=puzzle.astronauts.map((person,index)=>
+makeTile(
+index,
+person.done?"🏠":person.icon,
+!person.decoy && person.done
+)
+);
+progress=
+puzzle.astronauts.filter(
+person=>!person.decoy && person.done
+).length+"/3";
+}
+showModal(`
+<button class="close" id="closePuzzle">×</button>
+<div class="eyebrow">
+${MISSIONS[mission].icon}
+${MISSIONS[mission].short} MINI GAME
+</div>
+<h2>${title}</h2>
+<div class="hint">STEP 1 · Complete Mini Game to unlock your decision!</div>
+${resourcePreview()}
+${mistakeHTML()}
+${mission===4 ? `<div class="science-note">🔬 NASA RadLab ISS DATA · ${radiationMessage()}
+${game.safetyScenario?.record ? ` · ${game.safetyScenario.record.doseRate.toFixed(3)} µGy/h` : ""}
+<p>Historical ISS reading · Simulation is not a lunar radiation forecast.</p></div>` : ""}
+${mission===3 ? `<div class="science-note">🌱 NASA OSDR-314: real plant red-light research · CSA food learning</div>` : ""}
+${mission===2 ? `<div class="science-note">💧 CSA: recycling water helps save supplies</div>` : ""}
+<div class="puzzle">
+<div class="tiles ${columns===2?"two":""}">
+${tiles.join("")}
+</div>
+<div class="progress-text">⭐ ${progress}</div>
+${
+game.feedback
+? `<div class="notice">
+💡 ${escapeHTML(game.feedback)}
+</div>`
+: ""
+}
+</div>
+<div class="hint">
+Arrow keys / WASD · SPACE / ENTER · ESC Back
+</div>
+`,"mission");
+$("closePuzzle").onclick=closeMission;
+document.querySelectorAll("[data-tile]").forEach(button=>{
+button.onclick=()=>{
+playTile(Number(button.dataset.tile));
+};
+});
+}
+function registerMistake() {
+if(game.stationStatus[game.mission]!=="pending") {
+return true;
+}
+game.mistakes[game.mission]++;
+game.totalMistakes++;
+game.score=Math.max(0,game.score-8);
+sound.beep(false);
+if(game.mistakes[game.mission]>=3) {
+game.stationStatus[game.mission]="broken";
+game.score=Math.max(0,game.score-12);
+game.phase="broken";
+game.puzzle=null;
+game.puzzleUnlocked[game.mission]=false;
+renderHUD();
+showBroken();
+return true;
+}
+renderScores();
+return false;
+}
+function playTile(index) {
+if(game.phase!=="puzzle" || !game.puzzle) return;
+game.selected=index;
+const puzzle=game.puzzle;
+const mission=game.mission;
+let correct=true;
+let finished=false;
+if(mission===0) {
+const tile=puzzle.tiles[index];
+if(tile.type!=="dust" || tile.done) {
+correct=false;
+} else {
+tile.done=true;
+}
+finished=
+puzzle.tiles.filter(tile=>tile.done).length===3;
+}
+if(mission===1) {
+const shape=puzzle.shapes[index];
+if(shape.id!==puzzle.targets[puzzle.matched]) {
+correct=false;
+} else {
+puzzle.matched++;
+}
+finished=puzzle.matched===3;
+}
+if(mission===2) {
+if(puzzle.pipes[index]) {
+correct=false;
+} else {
+puzzle.pipes[index]=true;
+}
+finished=puzzle.pipes.every(Boolean);
+}
+if(mission===3) {
+const plant=puzzle.plants[index];
+if(plant.decoy || plant.stage>=2) {
+correct=false;
+} else {
+plant.stage++;
+}
+finished=
+puzzle.plants.filter(
+plant=>!plant.decoy && plant.stage===2
+).length===4;
+}
+if(mission===4) {
+const person=puzzle.astronauts[index];
+if(person.decoy || person.done) {
+correct=false;
+} else {
+person.done=true;
+}
+finished=
+puzzle.astronauts.filter(
+person=>!person.decoy && person.done
+).length===3;
+}
+if(!correct) {
+game.feedback=[
+"🟫 = dusty panel. 🪨 = rock.",
+"Match the shape shown above.",
+"Turn ┃ to ━. Do not turn it again.",
+"Grow seeds into flowers. Avoid rocks.",
+"Help astronauts, not rocks or the Sun."
+][mission];
+if(!registerMistake()) {
+renderPuzzle();
+}
+return;
+}
+game.feedback="";
+sound.beep(true);
+if(finished) {
+unlockDecision();
+} else {
+renderPuzzle();
+}
+}
+function unlockDecision() {
+if(game.phase!=="puzzle" || !game.puzzle) return;
+game.puzzleUnlocked[game.mission]=true;
+game.puzzle=null;
+game.phase="choose";
+game.selected=0;
+game.feedback="";
+renderMissionChoices();
+sound.beep();
+}
+function showMissionResult() {
+const mission=MISSIONS[game.mission];
+const choice=currentOptions()[game.chosenPlan];
+showModal(`
+<div class="big-icon">🎉✨</div>
+<h2>Mission Complete!</h2>
+<p>Your Moon Crew is happy!</p>
+<div class="fact-box">
+<strong>
+YOU CHOSE: ${choice.icon} ${choice.name}
+</strong>
+${effectHTML(choice.effect)}
+</div>
+${resourcePreview()}
+<div class="science-note">
+💡 ${mission.fact}
+</div>
+${
+game.mission===2
+? `<div class="hint">
+🍃 Science reference: CSA Food Toolkit
+</div>`
+: ""
+}
+${
+game.mission===3
+? `<div class="hint">
+🌱 NASA OSDR-314 + CSA Food Toolkit
+</div>`
+: ""
+}
+${
+game.mission===4
+? `<div class="hint">
+🛡️ ${radiationMessage()}
+<p>ISS data · Game resource effects are simulated.</p>
+</div>`
+: ""
+}
+<button class="primary" id="nextMission">
+${
+game.mission===4
+? "🏆 FINISH ADVENTURE"
+: "⭐ NEXT MISSION"
+}
+</button>
+`,"mission");
+$("nextMission").onclick=nextMission;
+}
+function showBroken() {
+const mission=MISSIONS[game.mission];
+showModal(`
+<div class="big-icon">💥🔧</div>
+<div class="eyebrow">
+MISSION ${game.mission+1} OF 5
+</div>
+<h2>${mission.short} Station Closed!</h2>
+<p>❌❌❌ · 3 mistakes</p>
+<div class="notice">
+🔒 Station offline · −12 extra score
+</div>
+<p>Your crew can still visit the next station.</p>
+<button class="primary" id="continueBroken">
+⭐ NEXT STATION
+</button>
+`,"mission");
+$("continueBroken").onclick=nextMission;
+}
+function nextMission() {
+if(
+game.phase!=="result" &&
+game.phase!=="broken"
+)return;
+game.mission++;
+game.phase="";
+game.puzzle=null;
+hideModal();
+renderHUD();
+if(game.mission>=5) {
+showEnding();
+return;
+}
+if(game.mission===4&&!game.homeDone) {
+toast("📡 Visit HOME to contact Earth!");
+} else {
+toast("Find the next glowing station!");
+}
+}
+function failGame(reason) {
+if(game.failed) return;
+game.failed=true;
+game.failureReason=reason;
+game.phase="failure";
+game.puzzle=null;
+if(game.mission<5) {
+game.stationStatus[game.mission]="broken";
+}
+game.score=Math.max(0,game.score-15);
+saveScore("FAILED");
+renderHUD();
+showFailure();
+sound.stop();
+}
+function showFailure() {
+showModal(`
+<div class="big-icon">🚨🌙</div>
+<div class="eyebrow">MOONBASE EMERGENCY</div>
+<h1>MISSION FAILED!</h1>
+<div class="notice">
+${escapeHTML(game.failureReason)} reached 0!
+</div>
+<div class="final-score">FAILED</div>
+<p>NO SCORE</p>
+${resourcePreview()}
+<p>
+Try a different plan to protect the Moon Crew!
+</p>
+<button class="primary" id="retryGame">
+↻ TRY AGAIN
+</button>
+`,"failure");
+$("retryGame").onclick=resetGame;
+sound.stop();
+}
+function showEnding() {
+const allSaved=game.stationStatus.every(
+status=>status==="done"
+);
+const status=allSaved ? "SUCCESS" : "PARTIAL";
+if(!game.finished) {
+saveScore(status);
+}
+const completed=game.stationStatus.filter(
+status=>status==="done"
+).length;
+showModal(`
+<div class="big-icon">🚀👩‍🚀🌙</div>
+<div class="eyebrow">
+${allSaved?"MISSION SUCCESS!":"ADVENTURE COMPLETE"}
+</div>
+<h1>
+${allSaved
+? "You're a MOON HERO!"
+: "Moon Crew Explorer!"}
+</h1>
+<div class="stars">
+${allSaved?"⭐⭐⭐":"⭐⭐"}
+</div>
+<div class="final-score">
+${game.score} / 100
+</div>
+<p>
+${
+allSaved
+? "SUCCESS · RANKED SCORE"
+: "PARTIAL · NOT RANKED"
+}
+</p>
+<p>
+${completed}/5 Stations Saved ·
+${game.totalMistakes} Mistakes
+</p>
+${resourcePreview()}
+<div class="science-note">
+Every choice has a cost.
+Balance Power, Life and Safety!
+</div>
+<div class="button-row">
+<button class="primary" id="playAgain">
+↻ PLAY AGAIN
+</button>
+<button class="secondary" id="finalScience">
+🔬 NASA SCIENCE
+</button>
+</div>
+`,"end");
+$("playAgain").onclick=resetGame;
+$("finalScience").onclick=showScience;
+sound.stop();
+}
+function showScience() {
+showModal(`
+<button class="close" id="closeScience">×</button>
+<div class="big-icon">🛰️🔬🌱</div>
+<div class="eyebrow">NASA + CSA REAL SCIENCE</div>
+<h2>Our Space Research Sources</h2>
+${researchHTML()}
+<div class="button-row">
+<button class="primary" id="scienceBack">
+BACK TO GAME
+</button>
+<button class="secondary" id="refreshResearch">
+↻ Reload Research
+</button>
+</div>
+`,"science");
+$("closeScience").onclick=closeScience;
+$("scienceBack").onclick=closeScience;
+$("refreshResearch").onclick=async()=>{
+await loadResearch();
+if(game.modal==="science") {
+showScience();
+}
+};
+}
+function closeScience() {
+hideModal();
+if(!game.started) {
+showIntroduction();
+} else if(game.failed) {
+showFailure();
+} else if(game.finished) {
+showEnding();
+}
+}
+function createNPCs() {
+const others=CREW.map((_,index)=>index)
+.filter(index=>index!==game.avatar);
+game.npcs=others.map((crewIndex,n)=>{
+const stopIndex=(n*2+1)%STOPS.length;
+const stop=STOPS[stopIndex];
+return {
+crewIndex,
+x:stop.x+(n-1)*24,
+y:stop.y,
+target:(stopIndex+1)%STOPS.length,
+offset:(n-1)*24,
+current:stopIndex,
+waiting:1+n*0.7,
+walking:false,
+phase:n
+};
+});
+}
+function updateNPCs(dt) {
+if(!game.started || game.failed || game.finished) return;
+for(const npc of game.npcs) {
+if(npc.waiting>0) {
+npc.waiting-=dt;
+npc.walking=false;
+continue;
+}
+const stop=STOPS[npc.target];
+const tx=stop.x+npc.offset;
+const ty=stop.y;
+const dx=tx-npc.x;
+const dy=ty-npc.y;
+const distance=Math.hypot(dx,dy);
+const speed=76+npc.crewIndex*7;
+if(distance<speed*dt+1) {
+npc.x=tx;
+npc.y=ty;
+npc.current=npc.target;
+npc.target=(npc.target+1)%STOPS.length;
+npc.waiting=1.5+npc.crewIndex*0.3;
+npc.walking=false;
+} else {
+npc.x+=dx/distance*speed*dt;
+npc.y+=dy/distance*speed*dt;
+npc.phase+=dt*10;
+npc.walking=true;
+}
+}
+}
+function drawRect(x,y,width,height,radius,fill,stroke=null,lineWidth=2) {
+ctx.beginPath();
+ctx.roundRect(x,y,width,height,radius);
+ctx.fillStyle=fill;
+ctx.fill();
+if(stroke) {
+ctx.strokeStyle=stroke;
+ctx.lineWidth=lineWidth;
+ctx.stroke();
+}
+}
+function drawCircle(x,y,radius,color) {
+ctx.beginPath();
+ctx.arc(x,y,radius,0,Math.PI*2);
+ctx.fillStyle=color;
+ctx.fill();
+}
+function drawLine(x1,y1,x2,y2,width,color) {
+ctx.beginPath();
+ctx.moveTo(x1,y1);
+ctx.lineTo(x2,y2);
+ctx.strokeStyle=color;
+ctx.lineWidth=width;
+ctx.lineCap="round";
+ctx.stroke();
+}
+function drawEmoji(value,x,y,size=40) {
+ctx.save();
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+ctx.font=`${size}px "Segoe UI Emoji",system-ui`;
+ctx.fillText(value,x,y);
+ctx.restore();
+}
+function drawAstronaut(x,y,person,scale=1,active=false,bob=0) {
+ctx.save();
+ctx.translate(x,y+bob);
+ctx.scale(scale,scale);
+drawCircle(0,24,24,"#24244444");
+drawRect(-17,-8,34,32,12,"#fff","#93a8ce",3);
+drawRect(-16,-8,32,11,5,person.color);
+drawRect(-24,-4,10,24,5,"#fff","#93a8ce");
+drawRect(14,-4,10,24,5,"#fff","#93a8ce");
+drawRect(-15,16,12,13,4,person.color);
+drawRect(3,16,12,13,4,person.color);
+drawCircle(0,-26,25,"#fff");
+drawRect(-19,-40,38,29,14,"#a8e3fa","#6289b7",3);
+drawRect(-10,-27,20,12,7,person.skin);
+drawCircle(-5,-23,2,"#46557f");
+drawCircle(5,-23,2,"#46557f");
+drawEmoji(person.mark,0,4,14);
+drawEmoji(person.icon,0,-57,18);
+if(active) {
+drawEmoji("⭐",0,-80,20);
+}
+ctx.restore();
+}
+function drawStation(station,index,time) {
+const [x,y]=station.position;
+ctx.save();
+ctx.translate(x,y);
+drawRect(
+-104,-77,208,155,25,
+station.color,
+"#f6faff",7
+);
+drawRect(
+-95,-68,190,46,17,
+"#ffffff66"
+);
+drawRect(
+-96,28,192,36,13,
+"#fff","#c7d7ef",2
+);
+drawRect(
+-65,44,130,14,6,
+"#a5bad9"
+);
+drawEmoji(station.icon,0,-12,50);
+ctx.textAlign="center";
+ctx.font="900 17px Trebuchet MS";
+ctx.fillStyle="#53688d";
+ctx.fillText(station.short,0,54);
+if(game.stationStatus[index]==="done") {
+drawEmoji("✅",90,-63,30);
+}
+if(game.stationStatus[index]==="broken") {
+drawRect(
+-103,-76,206,153,25,
+"#1f2549aa",
+"#ee7894",5
+);
+drawEmoji("💥",0,-22,47);
+drawRect(-75,27,150,34,10,"#ffedf0");
+ctx.fillStyle="#a63f64";
+ctx.font="900 18px Trebuchet MS";
+ctx.fillText("OFFLINE",0,51);
+drawEmoji("🔒",91,-62,28);
+}
+if(
+index===game.mission &&
+game.started &&
+!game.finished &&
+game.stationStatus[index]!=="broken" &&
+!(index===4&&!game.homeDone)
+) {
+ctx.beginPath();
+ctx.roundRect(-111,-84,222,169,31);
+ctx.lineWidth=6;
+ctx.strokeStyle="#ffe16f";
+ctx.stroke();
+}
+ctx.restore();
+}
+function drawHome(time) {
+const station={
+position:[480,435],
+color:"#ffc7d0",
+icon:"🏠",
+short:"HOME"
+};
+const index=5;
+const [x,y]=station.position;
+ctx.save();
+ctx.translate(x,y);
+drawRect(-104,-77,208,155,25,station.color,"#fff",7);
+drawRect(-96,28,192,36,13,"#fff","#c8d6ec",2);
+drawEmoji("🏠",0,-12,53);
+ctx.textAlign="center";
+ctx.font="900 17px Trebuchet MS";
+ctx.fillStyle="#526188";
+ctx.fillText("HOME",0,54);
+if(game.homeDone) {
+drawEmoji("✅",88,-62,29);
+}
+if(
+game.mission===4 &&
+!game.homeDone &&
+game.started
+) {
+ctx.beginPath();
+ctx.roundRect(-111,-84,222,169,31);
+ctx.strokeStyle="#ffe16f";
+ctx.lineWidth=6;
+ctx.stroke();
+}
+ctx.restore();
+}
+function drawTarget(time) {
+if(!game.started || game.finished || game.mission>=5) {
+return;
+}
+const [x,y]=targetPosition();
+const py=y-100+Math.sin(time*2.6)*3;
+ctx.save();
+ctx.shadowColor="#ffe898";
+ctx.shadowBlur=17;
+drawCircle(x,py,23,"#ffe184");
+ctx.shadowBlur=0;
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+ctx.font="900 33px Trebuchet MS";
+ctx.fillStyle="#5f4385";
+ctx.fillText("!",x,py+2);
+ctx.restore();
+}
+function drawMap(time) {
+const gradient=ctx.createLinearGradient(0,0,960,600);
+gradient.addColorStop(0,"#64578b");
+gradient.addColorStop(0.5,"#85769f");
+gradient.addColorStop(1,"#56628f");
+ctx.fillStyle=gradient;
+ctx.fillRect(0,0,960,600);
+for(let i=0;i<85;i++) {
+drawCircle(
+(i*331+17)%960,
+(i*227+33)%600,
+i%5===0?2:1,
+"#ffffff24"
+);
+}
+for(const [x,y,r] of [
+[35,300,23],
+[930,304,27],
+[55,550,17],
+[899,573,20],
+[582,290,18],
+[358,273,10]
+]) {
+drawCircle(x,y,r,"#b3a6ca55");
+drawCircle(x-4,y-4,r*0.6,"#d0c3d544");
+}
+const locations=[
+MISSIONS[0].position,
+MISSIONS[1].position,
+MISSIONS[2].position,
+MISSIONS[3].position,
+MISSIONS[4].position,
+[480,435]
+];
+const paths=[
+[0,3],
+[3,1],
+[0,2],
+[1,4],
+[2,5],
+[5,4],
+[3,5]
+];
+for(const [a,b] of paths) {
+const p=locations[a];
+const q=locations[b];
+drawLine(p[0],p[1],q[0],q[1],76,"#444868");
+drawLine(p[0],p[1],q[0],q[1],66,"#c6c9df");
+}
+MISSIONS.forEach((mission,index)=>{
+drawStation(mission,index,time);
+});
+drawHome(time);
+for(const npc of game.npcs) {
+drawAstronaut(
+npc.x,
+npc.y,
+CREW[npc.crewIndex],
+0.84,
+false,
+npc.walking?Math.sin(npc.phase)*1.5:0
+);
+if(!npc.walking && npc.waiting>0 && game.started) {
+drawCircle(npc.x+25,npc.y-83,15,"#fff2d8");
+drawEmoji(
+STOPS[npc.current].icon,
+npc.x+25,
+npc.y-83,
+17
+);
+}
+}
+drawAstronaut(
+game.player.x,
+game.player.y,
+CREW[game.avatar],
+1.04,
+true,
+Math.sin(game.player.walk)*1.6
+);
+drawTarget(time);
+ctx.fillStyle="#ffffff80";
+ctx.font="900 14px system-ui";
+ctx.fillText("MOONBASE · ASTROBORNEO",27,579);
+}
+let lastFrame=performance.now();
+function updateFrame(timestamp) {
+const dt=Math.min(
+0.04,
+(timestamp-lastFrame)/1000 || 0
+);
+lastFrame=timestamp;
+updateNPCs(dt);
+if(
+game.started &&
+!game.finished &&
+!game.failed &&
+!game.modal &&
+game.mission<5
+) {
+const right=
+game.pressed.has("d") ||
+game.pressed.has("ArrowRight");
+const left=
+game.pressed.has("a") ||
+game.pressed.has("ArrowLeft");
+const down=
+game.pressed.has("s") ||
+game.pressed.has("ArrowDown");
+const up=
+game.pressed.has("w") ||
+game.pressed.has("ArrowUp");
+const dx=Number(right)-Number(left);
+const dy=Number(down)-Number(up);
+if(dx||dy) {
+const length=Math.hypot(dx,dy);
+game.player.x=clamp(
+game.player.x+dx/length*220*dt,
+32,928
+);
+game.player.y=clamp(
+game.player.y+dy/length*220*dt,
+80,576
+);
+game.player.walk+=dt*11;
+if(dx!==0) {
+game.player.direction=dx;
+}
+}
+$("mapHint").textContent=isNearTarget()
+? game.mission===4&&!game.homeDone
+? "📡 Press SPACE to contact Earth!"
+: "✨ Press SPACE to play!"
+: "WASD / Arrows · SPACE Play";
+}
+if(
+game.noticeUntil &&
+timestamp>game.noticeUntil
+) {
+$("mapMessage").classList.remove("show");
+game.noticeUntil=0;
+}
+drawMap(timestamp/1000);
+requestAnimationFrame(updateFrame);
+}
+function handleModalKey(key,repeat) {
+if(game.modal==="intro") {
+if(repeat) return;
+if(["ArrowLeft","ArrowUp","a","w"].includes(key)) {
+setAvatar(game.avatar-1);
+} else if(
+["ArrowRight","ArrowDown","d","s"].includes(key)
+) {
+setAvatar(game.avatar+1);
+} else if([" ","Enter","Escape"].includes(key)) {
+startGame();
+}
+return;
+}
+if(game.modal==="restart") {
+if(key==="Escape") cancelRestart();
+return;
+}
+if(game.modal==="science") {
+if(key==="Escape") closeScience();
+return;
+}
+if(game.modal==="communication") {
+if(key==="Escape") {
+hideModal();
+return;
+}
+if(game.communicationPhase!=="ready") return;
+if(
+["ArrowLeft","ArrowRight",
+"ArrowUp","ArrowDown",
+"a","d","w","s"].includes(key)
+) {
+if(!repeat) {
+game.communicationChoice=1-game.communicationChoice;
+renderCommunication();
+}
+return;
+}
+if([" ","Enter"].includes(key) && !repeat) {
+completeCommunication(game.communicationChoice);
+}
+return;
+}
+if(game.modal==="end" || game.modal==="failure") {
+if([" ","Enter"].includes(key) && !repeat) {
+resetGame();
+}
+return;
+}
+if(game.modal==="mission") {
+if(key==="Escape") {
+closeMission();
+return;
+}
+if(game.phase==="result" || game.phase==="broken") {
+if([" ","Enter"].includes(key) && !repeat) {
+nextMission();
+}
+return;
+}
+if(
+["ArrowLeft","ArrowRight",
+"ArrowUp","ArrowDown",
+"a","d","w","s"].includes(key)
+) {
+if(!repeat) moveSelection(key);
+return;
+}
+if([" ","Enter"].includes(key) && !repeat) {
+if(game.phase==="choose") {
+selectPlan(game.selected);
+} else if(game.phase==="puzzle") {
+playTile(game.selected);
+}
+}
+}
+}
+function moveSelection(key) {
+if(game.phase==="choose") {
+game.selected=1-game.selected;
+renderMissionChoices();
+return;
+}
+if(game.phase!=="puzzle") return;
+const tileCount=document.querySelectorAll(
+"[data-tile]"
+).length;
+if(!tileCount) return;
+const columns=game.mission===0?2:3;
+const rows=Math.ceil(tileCount/columns);
+const current=game.selected;
+let next=current;
+if(["ArrowRight","d"].includes(key)) {
+next=(current+1)%tileCount;
+} else if(["ArrowLeft","a"].includes(key)) {
+next=(current-1+tileCount)%tileCount;
+} else {
+const row=Math.floor(current/columns);
+const col=current%columns;
+const down=["ArrowDown","s"].includes(key);
+const targetRow=(
+row+(down?1:rows-1)
+)%rows;
+next=Math.min(targetRow*columns+col,tileCount-1);
+}
+game.selected=next;
+renderPuzzle();
+}
+document.addEventListener("keydown",event=>{
+const key=event.key.length===1
+? event.key.toLowerCase()
+: event.key;
+if(
+[" ","Enter",
+"ArrowLeft","ArrowRight",
+"ArrowUp","ArrowDown",
+"w","a","s","d"].includes(key)
+) {
+event.preventDefault();
+}
+if(game.modal) {
+handleModalKey(key,event.repeat);
+return;
+}
+if(
+["ArrowLeft","ArrowRight",
+"ArrowUp","ArrowDown",
+"w","a","s","d"].includes(key)
+) {
+game.pressed.add(key);
+}
+if([" ","Enter"].includes(key) && !event.repeat) {
+interact();
+}
+});
+document.addEventListener("keyup",event=>{
+game.pressed.delete(
+event.key.length===1
+? event.key.toLowerCase()
+: event.key
+);
+});
+window.addEventListener("blur",()=>{
+game.pressed.clear();
+});
+document.addEventListener("visibilitychange",()=>{
+if(document.hidden) {
+game.pressed.clear();
+sound.stop();
+} else if(
+game.started &&
+game.musicEnabled &&
+!game.finished
+) {
+sound.play();
+}
+});
+$("musicButton").onclick=()=>{
+game.musicEnabled=!game.musicEnabled;
+$("musicButton").textContent=game.musicEnabled
+? "🎵 Music On"
+: "🔇 Music Off";
+if(game.musicEnabled) {
+sound.play();
+} else {
+sound.stop();
+}
+};
+$("restartButton").onclick=showRestart;
+$("scienceButton").onclick=showScience;
+$("scienceDetails").onclick=showScience;
+$("touchPlay").onclick=()=>{
+if(game.modal==="communication") {
+if(game.communicationPhase==="ready") {
+completeCommunication(game.communicationChoice);
+}
+return;
+}
+if(game.modal==="mission") {
+if(game.phase==="choose") {
+selectPlan(game.selected);
+} else if(game.phase==="puzzle") {
+playTile(game.selected);
+} else if(
+game.phase==="result" ||
+game.phase==="broken"
+) {
+nextMission();
+}
+return;
+}
+interact();
+};
+document.querySelectorAll("[data-dir]").forEach(button=>{
+const direction=button.dataset.dir;
+button.addEventListener("pointerdown",event=>{
+event.preventDefault();
+if(game.modal==="mission") {
+moveSelection(direction);
+} else if(
+game.modal==="communication" &&
+game.communicationPhase==="ready"
+) {
+game.communicationChoice=1-game.communicationChoice;
+renderCommunication();
+} else {
+game.pressed.add(direction);
+}
+});
+for(const type of [
+"pointerup",
+"pointerleave",
+"pointercancel"
+]) {
+button.addEventListener(type,()=>{
+game.pressed.delete(direction);
+});
+}
+});
+canvas.addEventListener("click",event=>{
+if(
+game.modal ||
+!game.started ||
+game.finished
+)return;
+const bounds=canvas.getBoundingClientRect();
+const x=(event.clientX-bounds.left)*960/bounds.width;
+const y=(event.clientY-bounds.top)*600/bounds.height;
+const [tx,ty]=targetPosition();
+if(Math.hypot(x-tx,y-ty)<120) {
+if(isNearTarget()) {
+interact();
+} else {
+showMapMessage("Walk closer to the building!");
+}
+}
+});
+createNPCs();
+renderHUD();
+showIntroduction();
+updateSciencePanel();
+loadResearch();
+requestAnimationFrame(updateFrame);
+})();
+</script>
+</body>
+</html>
