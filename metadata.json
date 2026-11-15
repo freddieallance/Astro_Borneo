@@ -1,0 +1,6 @@
+{
+  "name": "AstroBorneo | Mission Survival Academy",
+  "description": "Interactive Moonbase survival mission academy featuring NASA RadLab, NASA OSDR-314, and CSA space science resources.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
